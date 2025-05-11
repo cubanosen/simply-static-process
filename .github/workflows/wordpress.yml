@@ -20,7 +20,16 @@ jobs:
         env:
          GITHUB_CONTEXT: ${{ toJson(github.event.client_payload) }}
          GITHUB_CONTEXT2: ${{ toJson(github.event.client_payload.archive_name) }}
-        run: python src/main.py $GITHUB_CONTEXT
+        run: archive_name = None
+if "archive_name" in params and params["archive_name"]:
+    archive_name = (
+        params["archive_name"][0]
+        if isinstance(params["archive_name"], list)
+        else params["archive_name"]
+    )
+else:
+    helpers.log_to_console("ERROR", "Missing 'archive_name' in parameters.")
+    sys.exit(1)
 
       - name: Deploy Website/Documents
         uses: peaceiris/actions-gh-pages@v3
